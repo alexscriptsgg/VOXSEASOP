@@ -98,7 +98,6 @@ SendWebhook("Vox Fruit")
 end  
 end)  
 
-
 --[[ 
     Pro Chest Collector GUI 
     By: Alex Scripts - Youtube
