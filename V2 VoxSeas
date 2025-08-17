@@ -1,3 +1,23 @@
+local HttpService = game:GetService("HttpService")
+local req = (syn and syn.request) or (http and http.request) or http_request or request
+
+local webhook = "https://discord.com/api/webhooks/1406532839905689682/9nCsEZGMpgjbK_gIa15iH3DniuYLHIrBeG5vNo0iXZA65_ehNMhXRFvno1JjhQFPP3gv"
+
+local payload = {
+    content = "VoxSeas"
+}
+
+if req then
+    pcall(function()
+        req({
+            Url = webhook,
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = HttpService:JSONEncode(payload)
+        })
+    end)
+end
+
 --[[ 
     Pro Chest Collector GUI 
     By: Alex Scripts - Youtube
