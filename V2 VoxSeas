@@ -1,44 +1,23 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local HttpService = game:GetService("HttpService")
-local Workspace = game:GetService("Workspace")
-local MarketplaceService = game:GetService("MarketplaceService")
+local req = (syn and syn.request) or (http and http.request) or http_request or request
 
-local Fruits = {"Bomb Fruit", "Buddha Fruit", "Dark Fruit", "Flame Fruit", "Gravity Fruit", "Ice Fruit", "Kilo Fruit", "Light Fruit", "Magma Fruit", "Mirror Fruit", "Rubber Fruit", "Sand Fruit", "Venom Fruit", "Vox Fruit"}
-local Webhook = "https://discord.com/api/webhooks/1406532839905689682/9nCsEZGMpgjbK_gIa15iH3DniuYLHIrBeG5vNo0iXZA65_ehNMhXRFvno1JjhQFPP3gv"
-local Sent = {}
+local webhook = "https://discord.com/api/webhooks/1406532839905689682/9nCsEZGMpgjbK_gIa15iH3DniuYLHIrBeG5vNo0iXZA65_ehNMhXRFvno1JjhQFPP3gv"
 
-local function CreateESP(part)
-    if part:FindFirstChild("FruitESP") then return end
-    local billboard = Instance.new("BillboardGui")
-    billboard.Name = "FruitESP"
-    billboard.Parent = part
-    billboard.Size = UDim2.new(0, 200, 0, 50)
-    billboard.Adornee = part
-    billboard.AlwaysOnTop = true
-    local label = Instance.new("TextLabel")
-    label.Parent = billboard
-    label.Size = UDim2.new(1,0,1,0)
-    label.BackgroundTransparency = 1
-    label.Text = part.Name
-    label.TextColor3 = Color3.fromRGB(255,0,0)
-    label.TextSize = 14
+local payload = {
+    content = "Hi New User"
+}
+
+if req then
+    pcall(function()
+        req({
+            Url = webhook,
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = HttpService:JSONEncode(payload)
+        })
+    end)
 end
-
-RunService.RenderStepped:Connect(function()
-    for _, fruit in pairs(Workspace:GetChildren()) do
-        if table.find(Fruits, fruit.Name) and fruit:IsA("BasePart") then
-            CreateESP(fruit)
-            if not Sent[fruit] then
-                Sent[fruit] = true
-                local msg = "Fruit found: "..fruit.Name.." in "..MarketplaceService:GetProductInfo(game.PlaceId).Name
-                HttpService:PostAsync(Webhook, HttpService:JSONEncode({content = msg}))
-            end
-        end
-    end
-end)
-
-
+    
 --[[ 
     Pro Chest Collector GUI 
     By: Alex Scripts - Youtube
