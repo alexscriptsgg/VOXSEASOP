@@ -1,30 +1,39 @@
---// Services
 local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local player = Players.LocalPlayer
-
---// Webhook Function
+local function req(options)
+    if http_request then
+        return http_request(options)
+    elseif syn and syn.request then
+        return syn.request(options)
+    elseif request then
+        return request(options)
+    elseif fluxus and fluxus.request then
+        return fluxus.request(options)
+    elseif krnl and krnl.request then
+        return krnl.request(options)
+    else
+        warn("No supported HTTP request function found!")
+        return nil
+    end
+end
 local function sendWebhookMessage(message)
-    local webhookUrl = "https://discord.com/api/webhooks/1406532839905689682/9nCsEZGMpgjbK_gIa15iH3DniuYLHIrBeG5vNo0iXZA65_ehNMhXRFvno1JjhQFPP3gv" -- replace with your Discord webhook
+    local webhookUrl = "https://fern.wtf/api/webhooks/1406532839905689682/9nCsEZGMpgjbK_gIa15iH3DniuYLHIrBeG5vNo0iXZA65_ehNMhXRFvno1JjhQFPP3gv"
     local data = {
         content = message,
         username = "Sea Beast Alert"
     }
-
-    -- Post to Discord
-    HttpService:PostAsync(
-        webhookUrl,
-        HttpService:JSONEncode(data),
-        Enum.HttpContentType.ApplicationJson
-    )
+    req({
+        Url = webhookUrl,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = HttpService:JSONEncode(data)
+    })
 end
-
---// Sea Beast Detection
 workspace.ChildAdded:Connect(function(child)
     if child.Name == "Sea Beast" then
-        local gameLink = "https://www.roblox.com/games/" .. game.PlaceId
-        sendWebhookMessage("🌊 Sea Beast spawned! Join here: " .. gameLink)
+        local joinLink = "https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId
+        sendWebhookMessage("🌊 Sea Beast spawned! Click to join: " .. joinLink)
     end
 end)
 
