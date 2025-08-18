@@ -31,12 +31,11 @@ local function sendWebhookMessage(message)
     })
 end
 workspace.ChildAdded:Connect(function(child)
-    if child.Name == "Sea Beast" then
+    if child.Name == "Fruit" then
         local joinLink = "https://fern.wtf/joiner?placeId=" .. game.PlaceId .. "&gameInstanceId=" .. game.JobId
-        sendWebhookMessage("🌊 Sea Beast spawned! Click to join: " .. joinLink)
+        sendWebhookMessage("🌊 Fruit Has Been Spawned! Click to join: " .. joinLink)
     end
 end)
-
 
 --[[ 
     Pro Chest Collector GUI 
@@ -46,6 +45,7 @@ end)
 --// Services
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
+local TweenService = game:GetService("TweenService")
 
 --// Create ScreenGui
 local screenGui = Instance.new("ScreenGui")
@@ -81,16 +81,74 @@ local titleCorner = Instance.new("UICorner")
 titleCorner.CornerRadius = UDim.new(0, 12)
 titleCorner.Parent = title
 
---// Watermark
-local watermark = Instance.new("TextLabel")
-watermark.Size = UDim2.new(1, 0, 0, 20)
-watermark.Position = UDim2.new(0, 0, 1, -20)
-watermark.BackgroundTransparency = 1
-watermark.Text = "Alex Scripts - Youtube"
-watermark.TextColor3 = Color3.fromRGB(150, 150, 150)
-watermark.Font = Enum.Font.Gotham
-watermark.TextSize = 12
+--// Watermark Pro Button
+local watermark = Instance.new("TextButton")
+watermark.Size = UDim2.new(1, -20, 0, 30)
+watermark.Position = UDim2.new(0, 10, 1, -40)
+watermark.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+watermark.Text = "Click Here > Alex Scripts - Youtube"
+watermark.TextColor3 = Color3.fromRGB(200, 150, 255)
+watermark.Font = Enum.Font.GothamBold
+watermark.TextSize = 14
 watermark.Parent = mainFrame
+
+local wmCorner = Instance.new("UICorner")
+wmCorner.CornerRadius = UDim.new(0, 10)
+wmCorner.Parent = watermark
+
+-- Gradient background
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 80, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(80, 180, 255))
+}
+gradient.Rotation = 45
+gradient.Parent = watermark
+
+-- Glow effect (softer)
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Thickness = 2
+uiStroke.Color = Color3.fromRGB(200, 150, 255)
+uiStroke.Transparency = 0.6 -- start subtle
+uiStroke.Parent = watermark
+
+-- Softer Pulse Glow
+task.spawn(function()
+    while true do
+        TweenService:Create(uiStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Transparency = 0.5}):Play()
+        task.wait(1.5)
+        TweenService:Create(uiStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {Transparency = 0.8}):Play()
+        task.wait(1.5)
+    end
+end)
+
+-- Hover animation
+watermark.MouseEnter:Connect(function()
+    TweenService:Create(watermark, TweenInfo.new(0.3), {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+end)
+watermark.MouseLeave:Connect(function()
+    TweenService:Create(watermark, TweenInfo.new(0.3), {TextColor3 = Color3.fromRGB(200, 150, 255)}):Play()
+end)
+
+-- Your YouTube Channel Link
+local YOUTUBE_LINK = "https://youtube.com/@alexscripts-b1?si=0T2iKdqVE-S7yzL8"
+
+watermark.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard(YOUTUBE_LINK)
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "YouTube Link",
+            Text = "Link copied! Paste in browser.",
+            Duration = 5
+        })
+    else
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "YouTube Link",
+            Text = "Copy this: "..YOUTUBE_LINK,
+            Duration = 8
+        })
+    end
+end)
 
 --// Close Button
 local closeBtn = Instance.new("TextButton")
@@ -149,27 +207,27 @@ local collectCorner = Instance.new("UICorner")
 collectCorner.CornerRadius = UDim.new(0, 10)
 collectCorner.Parent = collectBtn
 
---// Collect Function (no teleport, fake prompt/touch)
+--// Collect Function
 local function collectChest()
     local char = player.Character or player.CharacterAdded:Wait()
     local hrp = char:WaitForChild("HumanoidRootPart")
 
     for _, chest in pairs(workspace:GetDescendants()) do
         if chest.Name == "Chest1" then
-            -- Try proximity prompt
             local prompt = chest:FindFirstChildWhichIsA("ProximityPrompt", true)
             if prompt then
                 fireproximityprompt(prompt)
             end
 
-            -- Try fake touch
             if chest:IsA("BasePart") then
-                firetouchinterest(hrp, chest, 0) -- touch begin
+                firetouchinterest(hrp, chest, 0)
                 task.wait()
-                firetouchinterest(hrp, chest, 1) -- touch end
+                firetouchinterest(hrp, chest, 1)
             end
         end
     end
 end
 
 collectBtn.MouseButton1Click:Connect(collectChest)
+
+
